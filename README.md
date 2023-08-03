@@ -1,0 +1,2 @@
+# kozossegi-portal
+Közösségi Portál
