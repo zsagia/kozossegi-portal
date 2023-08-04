@@ -1,0 +1,28 @@
+<div class="filter-buttons">
+  <button (click)="setFilter('all')"
+          [ngClass]="{'on':filter==='all'}">
+          MINDENKI
+  </button>
+  <button (click)="setFilter('contacts')"
+          [ngClass]="{'on':filter==='contacts'}">
+          ISMERŐSÖK
+  </button>
+  <button (click)="setFilter('unknowns')"
+          [ngClass]="{'on':filter==='unknowns'}">
+          FELFEDEZÉS
+  </button>
+  <button (click)="setFilter('marked')"
+          [ngClass]="{'on':filter==='marked'}">
+          ÉN JELÖLTEM
+  </button>
+  <button (click)="setFilter('markedBy')"
+          [ngClass]="{'on':filter==='markedBy'}">
+          ENGEM JELÖLT
+  </button>
+</div>
+
+<div class="user-grid">
+  <div *ngFor="let user of filteredUsers$ | async" class="user-item">
+    {{ user.name }}
+  </div>
+</div>

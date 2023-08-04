@@ -1,0 +1,21 @@
+header {
+  background-color: #77BB3F;
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 30px 10px 10px;
+}
+.logo {
+  width: 120px;
+  height: auto;
+}
+.menu-links {
+  display: flex;
+}
+.menu-link {
+  margin-left: 20px;
+  color: #fff;
+  text-decoration: none;
+  text-transform: uppercase;
+}
