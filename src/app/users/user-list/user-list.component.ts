@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Observable, Subscription, of } from 'rxjs';
+import { AuthService } from 'src/app/auth/auth.service';
 import { User } from 'src/app/shared/models/user.model';
 import { UserService } from 'src/app/shared/services/user.service';
 
@@ -10,25 +11,23 @@ import { UserService } from 'src/app/shared/services/user.service';
 })
 export class UserListComponent implements OnInit, OnDestroy {
   private users: User[] = [];
+  private userSubscription: Subscription | null = null;
+  private authenticatedUser: User;
+
+  filteredUsers$: Observable<User[]> | null = null;
   filter: string = 'all';
 
-  private TEMP_ACT_USER: User; // TODO: törölni!
-
-  filteredUsers$: Observable<User[]>;
-  private userSubscription: Subscription | null = null;
-
-  constructor(private userService: UserService) {
-    this.getUsers();
-    this.TEMP_ACT_USER = this.users[0];
-    this.filteredUsers$ = this.getFilteredUsers('all');
+  constructor(private userService: UserService, private authService: AuthService) {
+    this.authenticatedUser = this.authService.getAuthenticatedUser();
   }
 
   ngOnInit() {
-  }
-
-  getUsers(): void {
-    this.userSubscription = this.userService.getUsers()
-      .subscribe(users => this.users = users);
+    this.userService.getUsersFromServer();
+    this.userSubscription = this.userService.getUsersUpdateListener()
+      .subscribe(users => {
+        this.users = users;
+        this.filteredUsers$ = this.getFilteredUsers('all');
+      });
   }
 
   setFilter(filter: string) {
@@ -37,20 +36,63 @@ export class UserListComponent implements OnInit, OnDestroy {
   }
 
   private getFilteredUsers(filter: string): Observable<User[]> {
-    const userContacts = this.TEMP_ACT_USER.contacts;
-    const markedUserIds = this.TEMP_ACT_USER.markedUsers;
-    switch (filter) {
-      case 'contacts':
-        return of(this.users.filter(user => userContacts.includes(user.id)));
-      case 'unknowns':
-        return of(this.users.filter(user => !userContacts.includes(user.id)));
-      case 'marked':
-        return of(this.users.filter(user => markedUserIds.includes(user.id)));
-      case 'markedBy':
-        return of(this.users.filter(user => user.markedUsers.includes(this.TEMP_ACT_USER.id)));
-      default:
-        return of(this.users);
+    if (filter !== 'all') {
+      return of(this.users.filter(user => user.contactState === filter));
     }
+    return of(this.users.filter(user => user.contactState !== 'own'));
+  }
+
+  markUser(userId: number) {
+    this.userService.getUser(this.authenticatedUser.id).subscribe(
+      currentUser => {
+        currentUser.markedUsers.push(userId);
+        this.userService.updateUser(currentUser);
+      }
+    );
+  }
+  cancelMark(userId: number) {
+    this.userService.getUser(this.authenticatedUser.id).subscribe(
+      currentUser => {
+        const indexToRemove = currentUser.markedUsers.indexOf(userId);
+        if (indexToRemove > -1) {
+          currentUser.markedUsers.splice(indexToRemove, 1);
+        }
+        this.userService.updateUser(currentUser);
+      }
+    );
+  }
+  acceptMark(userId: number) {
+    this.userService.getUser(this.authenticatedUser.id).subscribe(
+      currentUser => {
+        currentUser.contacts.push(userId);
+        this.userService.updateUser(currentUser);
+      }
+    );
+    this.userService.getUser(userId).subscribe(
+      otherUser => {
+        otherUser.contacts.push(this.authenticatedUser.id);
+        const indexToRemove = otherUser.markedUsers.indexOf(this.authenticatedUser.id);
+        if (indexToRemove > -1) {
+          otherUser.markedUsers.splice(indexToRemove, 1);
+        }
+        this.userService.updateUser(otherUser);
+      }
+    );
+  }
+  declineMark(userId: number) {
+    this.userService.getUser(userId).subscribe(
+      otherUser => {
+        const indexToRemove = otherUser.markedUsers.indexOf(this.authenticatedUser.id);
+        if (indexToRemove > -1) {
+          otherUser.markedUsers.splice(indexToRemove, 1);
+        }
+        this.userService.updateUser(otherUser);
+      }
+    );
+  }
+
+  trackByUserId(index: number, user: User): number {
+    return user.id;
   }
 
   ngOnDestroy(): void {

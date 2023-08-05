@@ -12,6 +12,7 @@ export class DbMockService implements InMemoryDbService {
         id: 1,
         name: 'User 1',
         active: true,
+        about: "Én vagyok az admin :)",
         markedUsers: [2],
         contacts: [3, 5],
         role: UserRole.Admin
@@ -19,6 +20,7 @@ export class DbMockService implements InMemoryDbService {
       {
         id: 2,
         name: 'User 2',
+        about: "Helló mindenki!",
         active: true,
         markedUsers: [],
         contacts: [3, 4],
@@ -27,6 +29,7 @@ export class DbMockService implements InMemoryDbService {
       {
         id: 3,
         name: 'User 3',
+        about: "Nem mutatkozom be...",
         active: false,
         markedUsers: [],
         contacts: [1, 2],
@@ -35,6 +38,7 @@ export class DbMockService implements InMemoryDbService {
       {
         id: 4,
         name: 'User 4',
+        about: "Hajrá Közösségi Portál :D",
         active: true,
         markedUsers: [5, 1],
         contacts: [],
@@ -43,9 +47,19 @@ export class DbMockService implements InMemoryDbService {
       {
         id: 5,
         name: 'User 5',
+        about: "Ennyit rólam.",
         active: true,
         markedUsers: [],
         contacts: [1],
+        role: UserRole.User
+      },
+      {
+        id: 6,
+        name: 'User 6',
+        about: "Újabb user vagyok.",
+        active: true,
+        markedUsers: [],
+        contacts: [],
         role: UserRole.User
       },
     ];

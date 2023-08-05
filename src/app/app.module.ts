@@ -9,6 +9,7 @@ import { UserService } from './shared/services/user.service';
 
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
+import { AuthService } from './auth/auth.service';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { HeaderComponent } from './header/header.component';
     InMemoryWebApiModule.forRoot(DbMockService, { delay: 0 }),
   ],
   providers: [
-    UserService
+    UserService,
+    AuthService
   ],
   bootstrap: [AppComponent]
 })
