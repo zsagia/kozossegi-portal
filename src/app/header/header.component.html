@@ -1,12 +1,43 @@
 <header>
-  <img class="logo" src="assets/logo.png" alt="Logo">
+  <div class="logo-container">
+    <img class="logo" src="assets/logo-notext.png" alt="Logo">
+    <h1>Közösségi Portál</h1>
+  </div>
   <nav class="menu-links">
-      <a class="menu-link" routerLink="/message-board">Üzenőfal</a>
-      <a class="menu-link" routerLink="/users">Felhasználók</a>
-      <a class="menu-link" routerLink="/messages">Üzenetek</a>
-      <a class="menu-link" routerLink="/user/0">Profil</a>
-      <a class="menu-link" routerLink="/sign-up">Regisztráció</a>
-      <a class="menu-link" routerLink="/sign-in">Bejelentkezés</a>
-      <a class="menu-link">Kijelentkezés</a>
+      <a class="menu-link"
+         routerLink="/message-board"
+         routerLinkActive="active"
+         *ngIf="isAuthenticated">
+        Üzenőfal
+      </a>
+      <a class="menu-link"
+         routerLink="/users"
+         routerLinkActive="active"
+         *ngIf="isAuthenticated">
+        Felhasználók
+      </a>
+      <a class="menu-link"
+         routerLink="/messages"
+         routerLinkActive="active"
+         *ngIf="isAuthenticated">
+        Üzenetek
+      </a>
+      <a class="menu-link"
+         routerLink="/signup"
+         routerLinkActive="active"
+         *ngIf="!isAuthenticated">
+        Regisztráció
+      </a>
+      <a class="menu-link"
+         routerLink="/signin"
+         routerLinkActive="active"
+         *ngIf="!isAuthenticated">
+        Bejelentkezés
+      </a>
+      <a class="menu-link logout"
+         (click)="logout()"
+         *ngIf="isAuthenticated">
+        Kijelentkezés
+      </a>
   </nav>
 </header>
