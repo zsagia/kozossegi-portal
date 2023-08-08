@@ -1,0 +1,22 @@
+.notification {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 5px 5px 20px;
+  border-radius: 10px 0 10px 10px;
+  background-color: #F3A468;
+  margin: 5px 0;
+
+  button {
+    border: none;
+    outline: none;
+    cursor: pointer;
+    color: #333;
+    border-radius: 10px 0 10px 10px;
+    padding: 8px 10px;
+    margin-left: 10px;
+    background-color: #F7C59F;
+    cursor: pointer;
+    font-weight: bold;
+  }
+}

@@ -1,0 +1,57 @@
+.newsfeed {
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  align-items: center;
+  padding-bottom: 70px;
+
+  .notifications {
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+    width: 40%;
+  }
+
+  .posts {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+    width: 60%;
+  }
+
+  .new {
+    position: fixed;
+    bottom: 0;
+    height: 60px;
+    width: 100%;
+    padding: 10px 0;
+    background-color: #97C96E;
+    border-top: 2px solid #FFF8EB;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    input {
+      border: none;
+      color: #333;
+      border-radius: 5px;
+      border: hidden;
+      padding: 20px 30px;
+      background-color: #FFF8EB;
+      width: 400px;
+    }
+    button {
+      border: none;
+      color: #FFF8EB;
+      border-radius: 5px;
+      border: hidden;
+      padding: 20px 10px;
+      background-color: #555;
+      width: 100px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 14px;
+      margin-left: 10px;
+    }
+  }
+}

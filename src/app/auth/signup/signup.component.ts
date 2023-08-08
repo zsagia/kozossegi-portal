@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { NgForm } from "@angular/forms";
 import { AuthService } from '../../shared/services/auth.service';
 import { UserRegData } from 'src/app/shared/models/user-reg.model';

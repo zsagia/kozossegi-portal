@@ -1,0 +1,24 @@
+<div class="newsfeed">
+
+  <div class="notifications">
+    <app-notifications></app-notifications>
+  </div>
+
+  <div class="posts">
+    <app-posts></app-posts>
+  </div>
+
+  <div class="new">
+    <form #postForm="ngForm" (submit)="send(postForm)">
+      <input type="text"
+             id="newPost"
+             name="newPost"
+             #newPostInput="ngModel"
+             placeholder="Üzenet mindenkinek"
+             aria-label="Üzenet mindenkinek"
+             ngModel>
+      <button type="submit" [disabled]="newPostInput.value===''">KÜLDÉS</button>
+    </form>
+  </div>
+
+</div>

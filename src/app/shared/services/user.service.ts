@@ -12,6 +12,11 @@ export class UserService {
   private authenticatedUser!: User | null;
 
   constructor(private http: HttpClient, private authService: AuthService) {
+    this.getAutheticatedUserFromServer();
+    this.getUsersFromServer();
+  }
+
+  private getAutheticatedUserFromServer(): void {
     this.authService.getAuthenticatedUser()
       .subscribe(user => this.authenticatedUser = user);
   }
@@ -20,7 +25,7 @@ export class UserService {
     return this.usersUpdatedSubject.asObservable();
   }
 
-  getUsersFromServer(): void{
+  private getUsersFromServer(): void{
     this.http.get<User[]>('api/users').pipe(
       map(usersArray => {
         return usersArray.map((user, index, usersArray) => {
@@ -34,7 +39,7 @@ export class UserService {
     });
   }
 
-  getUserContactState(user: User, usersArray: User[]): string {
+  private getUserContactState(user: User, usersArray: User[]): string {
     if (this.authenticatedUser) {
       const userContacts = usersArray.find(
         user => user.id === this.authenticatedUser!.id)?.contacts || [];
@@ -62,7 +67,7 @@ export class UserService {
     return '';
   }
 
-  getUser(userId: number): Observable<User> {
+  getUserFromServer(userId: number): Observable<User> {
     return this.http.get<User>('api/users/' + userId);
   }
 

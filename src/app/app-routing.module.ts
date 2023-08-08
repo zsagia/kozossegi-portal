@@ -6,6 +6,12 @@ import { AuthGuard } from './shared/guard/auth.guard';
 
 const routes: Routes = [
   {
+    path: 'newsfeed',
+    loadChildren: () => import('./newsfeed/newsfeed.module').then(m => m.NewsfeedModul),
+    canActivateChild: [AuthGuard],
+    canLoad: [AuthGuard]
+  },
+  {
     path: 'users',
     loadChildren: () => import('./users/users.module').then(m => m.UserModule),
     canActivateChild: [AuthGuard],
@@ -28,11 +34,11 @@ const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: '/users'
+    redirectTo: '/newsfeed'
   },
   {
     path: '**',
-    redirectTo: '/users'
+    redirectTo: '/newsfeed'
   }
 ];
 

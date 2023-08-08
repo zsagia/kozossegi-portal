@@ -76,6 +76,17 @@ export class DbMockService implements InMemoryDbService {
       },
     ];
 
+    const notifications = [
+      { id: 1, forUser: 1, message: 'Új ismerősnek jelölés: User 4' },
+      { id: 2, forUser: 1, message: 'Új üzenet tőle: User 3' }
+    ];
+
+    const posts = [
+      { id: 1, fromUser: 2, timestamp: '2023-08-07T11:34:56.789Z', text: 'Ez az első poszt' },
+      { id: 2, fromUser: 5, timestamp: '2023-08-07T12:40:12.333Z', text: 'Itt pedig a második' },
+      { id: 3, fromUser: 6, timestamp: '2023-08-07T15:50:44.555Z', text: 'Nyilván ez a harmadik' }
+    ];
+
     const messages = [
       {
         id: 1,
@@ -93,6 +104,6 @@ export class DbMockService implements InMemoryDbService {
       },
     ];
 
-    return { users, messages };
+    return { users, messages, notifications, posts };
   }
 }

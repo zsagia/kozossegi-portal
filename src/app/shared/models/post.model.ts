@@ -1,7 +1,7 @@
-export interface Message {
+export interface Post {
   id: number;
   fromUser: number;
-  forUser: number;
+  userName?: string;
   text: string;
   timestamp: string;
 }

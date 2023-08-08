@@ -23,7 +23,8 @@ export class SigninComponent implements OnInit {
 
   initForm(): void {
     this.signInForm = this.fb.group({
-      email: ['gg@gg.hu', [Validators.required, Validators.email]],
+      //email: ['gg@gg.hu', [Validators.required, Validators.email]],
+      email: ['a@b.c', [Validators.required, Validators.email]],
       password: ['123', Validators.required],
     });
   }
@@ -36,7 +37,7 @@ export class SigninComponent implements OnInit {
       };
       this.authService.signIn(user).subscribe(success => {
         if (success) {
-          this.router.navigate(['/users']);
+          this.router.navigate(['/newsfeed']);
         } else {
           this.error = true;
         }
