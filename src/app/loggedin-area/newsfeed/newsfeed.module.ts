@@ -27,4 +27,4 @@ const routes: Routes = [
   exports: [RouterModule],
   providers: []
 })
-export class NewsfeedModul { }
+export class NewsfeedModule { }

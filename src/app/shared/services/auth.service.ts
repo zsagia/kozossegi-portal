@@ -59,7 +59,7 @@ export class AuthService {
       name: user.password,
       email: user.email,
       password: this.encryptPassword(user.password),
-      active: true, // TODO
+      active: false,
       about: '',
       markedUsers: [],
       contacts: [],
@@ -74,7 +74,8 @@ export class AuthService {
       map((users) => {
         const dbUser = users.find(dbUser =>
           dbUser.email === formUser.email &&
-          dbUser.password === this.encryptPassword(formUser.password));
+          dbUser.password === this.encryptPassword(formUser.password) &&
+          dbUser.active === true);
         if (dbUser) {
           const token = this.generateToken(dbUser);
           this.setAuthToken(token);

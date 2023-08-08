@@ -36,7 +36,7 @@ export class DbMockService implements InMemoryDbService {
         email: 'a@b.c',
         password: 'MTIz',
         about: "Nem mutatkozom be...",
-        active: false,
+        active: true,
         markedUsers: [],
         contacts: [1, 2],
         role: UserRole.User
@@ -69,7 +69,7 @@ export class DbMockService implements InMemoryDbService {
         email: 'a@b.c',
         password: 'MTIz',
         about: "Újabb user vagyok.",
-        active: true,
+        active: false,
         markedUsers: [],
         contacts: [],
         role: UserRole.User

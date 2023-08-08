@@ -12,6 +12,7 @@ import { AuthService } from './shared/services/auth.service';
 
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
+import { LoggedinAreaModule } from './loggedin-area/loggedin-area.module';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,7 @@ import { HeaderComponent } from './header/header.component';
     AppRoutingModule,
     FormsModule,
     AuthModule,
-    InMemoryWebApiModule.forRoot(DbMockService, { delay: 0 }),
+    InMemoryWebApiModule.forRoot(DbMockService, { delay: 0 })
   ],
   providers: [
     UserService,

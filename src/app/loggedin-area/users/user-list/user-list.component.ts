@@ -100,6 +100,14 @@ export class UserListComponent implements OnInit, OnDestroy {
     }
   }
 
+  activate(userId: number) {
+    let userToActivate = this.users.find(user => user.id === userId);
+    if (userToActivate) {
+      userToActivate.active = true;
+      this.userService.updateUser(userToActivate);
+    }
+  }
+
   trackByUserId(index: number, user: User): number {
     return user.id;
   }

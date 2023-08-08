@@ -6,9 +6,10 @@ import { BehaviorSubject, Observable, Subscription, map, tap } from 'rxjs';
 import { UserNotification } from '../models/notification.model';
 import { Post } from '../models/post.model';
 import { UserService } from './user.service';
+import { LoggedinAreaModule } from 'src/app/loggedin-area/loggedin-area.module';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: LoggedinAreaModule
 })
 export class MessagesService {
   private notificationsSubject = new BehaviorSubject<UserNotification[]>([]);

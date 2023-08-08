@@ -24,7 +24,10 @@
 <div class="user-grid">
   <div *ngFor="let user of filteredUsers$ | async; trackBy: trackByUserId" class="user-item">
 
-    <div class="user-name">{{ user.name }}</div>
+    <div class="user-name" [ngClass]="{'inactive': !user.active}">
+      {{ user.name }}
+      <span class="inactive" *ngIf="!user.active" (click)="activate(user.id)"></span>
+    </div>
     <div class="user-details">{{ user.about }}</div>
     <div class="user-button-container">
       <button class="message"
