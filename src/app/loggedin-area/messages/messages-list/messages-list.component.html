@@ -2,7 +2,7 @@
 
   <div class="contacts-container">
     <div class="contact" *ngFor="let contact of messageContacts">
-      <div (click)="selectContact(contact.userId)"
+      <div (click)="selectContact(contact.userId, contact.userName)"
             [ngClass]="{'selected':contact.userId===selectedContactId}">
         {{ contact.userName }}
     </div>
@@ -10,7 +10,9 @@
   </div>
 
   <div class="messages-container">
-    <app-messages [contactId]="selectedContactId"></app-messages>
+    <app-messages [contactId]="selectedContactId"
+                  [contactName]="selectedContactName">
+    </app-messages>
     <div class="new" *ngIf="selectedContactId!==null">
       <form #messageForm="ngForm" (submit)="send(messageForm)">
         <input type="text"

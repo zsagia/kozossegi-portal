@@ -14,6 +14,7 @@ export class MessagesListComponent {
   messageContacts: MessageContact[] = [];
 
   selectedContactId: number | null = null;
+  selectedContactName: string | null = null;
 
   constructor(private messagesService: MessagesService) {}
 
@@ -27,8 +28,9 @@ export class MessagesListComponent {
         .subscribe(messageContacts => this.messageContacts = messageContacts);
   }
 
-  selectContact(userId: number) {
+  selectContact(userId: number, userName: string) {
     this.selectedContactId = userId;
+    this.selectedContactName = userName;
   }
 
   send(form: NgForm): void {

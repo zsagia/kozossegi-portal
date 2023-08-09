@@ -7,7 +7,6 @@ import { FormsModule } from '@angular/forms';
 import { AuthModule } from './auth/auth.module';
 
 import { DbMockService } from './shared/mock/inmemorydb.service';
-import { UserService } from './shared/services/user.service';
 import { AuthService } from './shared/services/auth.service';
 
 import { AppComponent } from './app.component';

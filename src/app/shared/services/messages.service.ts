@@ -9,7 +9,7 @@ import { MessageContact } from '../models/message-contact.model';
 
 @Injectable()
 export class MessagesService {
-  private messagesSubject = new BehaviorSubject<UserMessage[]>([]);
+  private messagesSubject$ = new BehaviorSubject<UserMessage[]>([]);
   private users: User[] = [];
   private authenticatedUser!: User | null;
 
@@ -44,16 +44,15 @@ export class MessagesService {
           });
         })
       )
-      .subscribe(messages => this.messagesSubject.next(messages));
+      .subscribe(messages => this.messagesSubject$.next(messages));
   }
 
   getMessageContacts(): Observable<MessageContact[]> {
-    return this.messagesSubject.pipe(
+    return this.messagesSubject$.pipe(
       map(messages => messages.filter(message =>
         message.toUser === this.authenticatedUser!.id)),
       map((messages: UserMessage[]) => {
         const contacts: MessageContact[] = [];
-
         messages.forEach(message => {
           const user = this.users.find(user => user.id === message.fromUser);
           if (user) {
@@ -63,14 +62,13 @@ export class MessagesService {
             }
           }
         });
-
         return contacts;
       })
     );
   }
 
   getMessagesWithUser(userId: number): Observable<UserMessage[]> {
-    return this.messagesSubject.pipe(
+    return this.messagesSubject$.pipe(
       map((messages: UserMessage[]) => {
         return messages.filter(message =>
             (message.fromUser === userId &&
@@ -91,11 +89,8 @@ export class MessagesService {
       message: messageText,
       timestamp: formattedDate,
     };
-    this.http.post<UserMessage>('api/messages', newMessage).subscribe(savedMessage => {
-      const updatedMessages = this.messagesSubject.getValue();
-      updatedMessages.push(savedMessage);
-      this.messagesSubject.next(updatedMessages);
-    });
+    this.http.post<UserMessage>('api/messages', newMessage)
+      .subscribe(() => this.getMessagesFromServer());
   }
 
 }

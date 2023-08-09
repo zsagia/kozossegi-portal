@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { UserNotification } from '../models/notification.model';
-import { BehaviorSubject, Observable, map, tap } from 'rxjs';
+import { BehaviorSubject, Observable, map } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from './auth.service';
 import { User } from '../models/user.model';
 
 @Injectable()
 export class NotificationService {
-  private notificationsSubject = new BehaviorSubject<UserNotification[]>([]);
+  private notificationsSubject$ = new BehaviorSubject<UserNotification[]>([]);
   private authenticatedUser!: User | null;
 
   constructor(private http: HttpClient,
@@ -27,23 +27,16 @@ export class NotificationService {
         notifications.filter(
           notification => notification.forUser === this.authenticatedUser!.id))
       )
-      .subscribe(notifications => this.notificationsSubject.next(notifications));
+      .subscribe(notifications => this.notificationsSubject$.next(notifications));
   }
 
-  getNotificationsUpdateListener(): Observable<UserNotification[]> {
-    return this.notificationsSubject.asObservable();
+  getNotifications(): Observable<UserNotification[]> {
+    return this.notificationsSubject$.asObservable();
   }
 
-  deleteNotificationById(notificationId: number) {
-    this.http.delete<void>('api/notifications/' + notificationId).pipe(
-      tap(() => {
-        const currentNotifications = this.notificationsSubject.getValue();
-        const updatedNotifications = currentNotifications.filter(
-          notification => notification.id !== notificationId
-        );
-        this.notificationsSubject.next(updatedNotifications);
-      })
-    ).subscribe();
+  deleteNotificationById(notificationId: number): void {
+    this.http.delete<void>('api/notifications/' + notificationId)
+      .subscribe(() => this.getNotificationsFromServer());
   }
 
   addNotification(type: string, fromUser: number, forUser: number): void {
@@ -65,15 +58,11 @@ export class NotificationService {
         message: message
       };
       this.http.post<UserNotification>('api/notifications', notification)
-        .subscribe(savedNotification => {
-          const updatedNotifications = this.notificationsSubject.getValue();
-          updatedNotifications.push(savedNotification);
-          this.notificationsSubject.next(updatedNotifications);
-        });
+        .subscribe(() => this.getNotificationsFromServer());
     }
   }
 
   resetNotifications() {
-    this.notificationsSubject.next([]);
+    this.notificationsSubject$.next([]);
   }
 }

@@ -8,7 +8,7 @@ import { User } from '../models/user.model';
 
 @Injectable()
 export class PostService {
-  private postsSubject = new BehaviorSubject<Post[]>([]);
+  private postsSubject$ = new BehaviorSubject<Post[]>([]);
   private users: User[] = [];
   private authenticatedUser!: User | null;
 
@@ -43,11 +43,11 @@ export class PostService {
           });
         })
       )
-      .subscribe(posts => this.postsSubject.next(posts));
+      .subscribe(posts => this.postsSubject$.next(posts));
   }
 
-  getPostsUpdateListener(): Observable<Post[]> {
-    return this.postsSubject.asObservable();
+  getPosts(): Observable<Post[]> {
+    return this.postsSubject$.asObservable();
   }
 
   addPost(postText: string): void {
@@ -59,9 +59,9 @@ export class PostService {
       text: postText
     };
     this.http.post<Post>('api/posts', newPost).subscribe(savedPost => {
-      const updatedPosts = this.postsSubject.getValue();
+      const updatedPosts = this.postsSubject$.getValue();
       updatedPosts.push(savedPost);
-      this.postsSubject.next(updatedPosts);
+      this.getPostsFromServer();
     });
   }
 

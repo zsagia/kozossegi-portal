@@ -23,6 +23,7 @@ export class UserListComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.getAuthenticatedUser();
+    this.userService.getAutheticatedUserFromServer();
     this.getUsers();
   }
 
@@ -46,7 +47,9 @@ export class UserListComponent implements OnInit, OnDestroy {
 
   private getFilteredUsers(filter: string): Observable<User[]> {
     if (filter !== 'all') {
-      return of(this.users.filter(user => user.contactState === filter));
+      return of(this.users.filter(
+        user => user.contactState === filter && user.contactState !== 'own'
+      ));
     }
     return of(this.users.filter(user => user.contactState !== 'own'));
   }
@@ -100,7 +103,7 @@ export class UserListComponent implements OnInit, OnDestroy {
     }
   }
 
-  activate(userId: number) {
+  activate(userId: number): void {
     let userToActivate = this.users.find(user => user.id === userId);
     if (userToActivate) {
       userToActivate.active = true;

@@ -29,12 +29,8 @@ export class SignupComponent {
       password: form.value.password
     };
     this.authService.signUp(newUser).subscribe({
-      next: user => {
-        console.log(user);
-        this.router.navigate(['/signin']);
-      },
+      next: () => this.router.navigate(['/signin']),
       error: errorMessage => {
-        console.log(errorMessage);
         this.errorMessage = errorMessage;
       }
     });

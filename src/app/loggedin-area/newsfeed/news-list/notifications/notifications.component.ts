@@ -1,6 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { AuthService } from 'src/app/shared/services/auth.service';
 import { UserNotification } from 'src/app/shared/models/notification.model';
 import { NotificationService } from 'src/app/shared/services/notification.service';
 
@@ -10,7 +9,6 @@ import { NotificationService } from 'src/app/shared/services/notification.servic
   styleUrls: ['./notifications.component.scss']
 })
 export class NotificationsComponent implements OnInit, OnDestroy {
-
   private notificationsSubscription!: Subscription | null;
   notifications: UserNotification[] = [];
 
@@ -26,7 +24,7 @@ export class NotificationsComponent implements OnInit, OnDestroy {
   }
 
   private getNotifications(): void {
-    this.notificationsSubscription = this.notificationService.getNotificationsUpdateListener()
+    this.notificationsSubscription = this.notificationService.getNotifications()
     .subscribe(notifications => this.notifications = notifications);
   }
 

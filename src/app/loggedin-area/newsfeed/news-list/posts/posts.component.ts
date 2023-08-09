@@ -19,7 +19,7 @@ export class PostsComponent implements OnInit, OnDestroy {
   }
 
   getPosts(): void {
-    this.postsSubscription = this.postService.getPostsUpdateListener()
+    this.postsSubscription = this.postService.getPosts()
       .subscribe(posts => this.posts = posts.sort((a, b) => b.id - a.id));
   }
 

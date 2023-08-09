@@ -13,7 +13,7 @@ export class UserService {
     this.getAutheticatedUserFromServer();
   }
 
-  private getAutheticatedUserFromServer(): void {
+  getAutheticatedUserFromServer(): void {
     this.authService.getAuthenticatedUser()
       .subscribe(user => this.authenticatedUser = user);
   }
@@ -31,7 +31,8 @@ export class UserService {
         }
         if (!userContacts.includes(user.id) &&
             !markedUserIds.includes(user.id) &&
-            !user.markedUsers.includes(this.authenticatedUser.id)) {
+            !user.markedUsers.includes(this.authenticatedUser.id) &&
+            user.id !== this.authenticatedUser.id) {
           return 'unknown'
         }
         if (markedUserIds.includes(user.id)) {

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { UserRegData } from '../models/user-reg.model';
 import { User } from '../models/user.model';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, catchError, map, of, switchMap } from 'rxjs';
+import { BehaviorSubject, Observable, catchError, map, of, switchMap, takeWhile } from 'rxjs';
 import { UserLoginData } from '../models/user-login.model';
 import { Router } from '@angular/router';
 import { UserRole } from '../enums/user-role.enum';
@@ -12,20 +12,18 @@ import { AuthResponse } from '../models/auth-response.model';
   providedIn: 'root',
 })
 export class AuthService {
-  private authenticatedUserSubject = new BehaviorSubject<User | null>(null);
-  private authenticatedUser$ = this.authenticatedUserSubject.asObservable();
+  private authenticatedUser$ = new BehaviorSubject<User | null>(null);
 
   constructor(private http: HttpClient,
               private router: Router) {}
 
   getAuthenticatedUser(): Observable<User | null> {
-    return this.authenticatedUser$;
+    return this.authenticatedUser$.asObservable()
+      .pipe(takeWhile(value => value != null));
   }
 
   checkLogin(): Observable<boolean> {
-    return this.authenticatedUser$.pipe(
-      map(user => !!user)
-    );
+    return this.authenticatedUser$.pipe(map(user => !!user));
   }
 
   signUp(user: UserRegData): Observable<any> {
@@ -58,7 +56,7 @@ export class AuthService {
 
   createUser(user: UserRegData): Observable<User> {
     const newUser = {
-      name: user.password,
+      name: user.name,
       email: user.email,
       password: this.encryptPassword(user.password),
       active: false,
@@ -78,16 +76,17 @@ export class AuthService {
           dbUser.email === formUser.email &&
           dbUser.password === this.encryptPassword(formUser.password));
         if (!dbUser) {
+          this.authenticatedUser$.next(null);
           return { success: false, message: 'Sikertelen bejelentkezés' };
         }
         else if (!dbUser.active) {
-          this.authenticatedUserSubject.next(null);
+          this.authenticatedUser$.next(null);
           return { success: false, message: 'Nem aktivált felhasználó' };
         }
         else {
+          this.authenticatedUser$.next(dbUser);
           const token = this.generateToken(dbUser);
           this.setAuthToken(token);
-          this.authenticatedUserSubject.next(dbUser);
           return { success: true, message: '' }
         }
       }));
@@ -113,8 +112,8 @@ export class AuthService {
   }
 
   signOut(): void {
+    this.authenticatedUser$.next(null);
     this.setCookie('auth_token', '', -1);
-    this.authenticatedUserSubject.next(null);
     this.router.navigate(['/signin']);
   }
 }
