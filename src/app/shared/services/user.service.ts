@@ -1,42 +1,21 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, Subscription, map } from 'rxjs';
+import { BehaviorSubject, Observable, map } from 'rxjs';
 import { User } from '../models/user.model';
 import { AuthService } from 'src/app/shared/services/auth.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class UserService {
-  private usersUpdatedSubject = new BehaviorSubject<User[]>([]);
   private authenticatedUser!: User | null;
+  private usersSubject$ = new BehaviorSubject<User[]>([]);
 
   constructor(private http: HttpClient, private authService: AuthService) {
     this.getAutheticatedUserFromServer();
-    this.getUsersFromServer();
   }
 
   private getAutheticatedUserFromServer(): void {
     this.authService.getAuthenticatedUser()
       .subscribe(user => this.authenticatedUser = user);
-  }
-
-  getUsersUpdateListener() {
-    return this.usersUpdatedSubject.asObservable();
-  }
-
-  private getUsersFromServer(): void{
-    this.http.get<User[]>('api/users').pipe(
-      map(usersArray => {
-        return usersArray.map((user, index, usersArray) => {
-          user.contactState = this.getUserContactState(user, usersArray);
-          return user;
-        })
-      })
-    )
-    .subscribe(usersWithContactState => {
-      this.usersUpdatedSubject.next(usersWithContactState);
-    });
   }
 
   private getUserContactState(user: User, usersArray: User[]): string {
@@ -67,14 +46,30 @@ export class UserService {
     return '';
   }
 
+  getUsers(): Observable<User[]> {
+    return this.usersSubject$.asObservable().pipe(
+      map(usersArray => {
+        return usersArray.map((user, index, usersArray) => {
+          user.contactState = this.getUserContactState(user, usersArray);
+          return user;
+        })
+      })
+    );
+  }
+
   getUserFromServer(userId: number): Observable<User> {
     return this.http.get<User>('api/users/' + userId);
   }
 
-  updateUser(updatedUser: User): void {
-    this.http.put<User>('api/users/' + updatedUser.id, updatedUser).subscribe(user =>
-      this.getUsersFromServer()
+  getUsersFromServer(): void {
+    this.http.get<User[]>('api/users').subscribe(
+      users => this.usersSubject$.next(users)
     );
+  }
+
+  updateUser(updatedUser: User): void {
+    this.http.put<User>('api/users/' + updatedUser.id, updatedUser)
+      .subscribe(() => this.getUsersFromServer());
   }
 
 }

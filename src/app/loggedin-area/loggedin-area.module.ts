@@ -2,6 +2,10 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthGuard } from '../shared/guard/auth.guard';
+import { MessagesService } from '../shared/services/messages.service';
+import { UserService } from '../shared/services/user.service';
+import { NotificationService } from '../shared/services/notification.service';
+import { PostService } from '../shared/services/post.service';
 
 const routes: Routes = [
   {
@@ -30,6 +34,12 @@ const routes: Routes = [
     CommonModule,
     RouterModule.forChild(routes)
   ],
-  exports: [RouterModule]
+  exports: [RouterModule],
+  providers: [
+    MessagesService,
+    NotificationService,
+    PostService,
+    UserService
+  ]
 })
 export class LoggedinAreaModule { }

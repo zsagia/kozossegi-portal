@@ -6,6 +6,7 @@ import { BehaviorSubject, Observable, catchError, map, of, switchMap } from 'rxj
 import { UserLoginData } from '../models/user-login.model';
 import { Router } from '@angular/router';
 import { UserRole } from '../enums/user-role.enum';
+import { AuthResponse } from '../models/auth-response.model';
 
 @Injectable({
   providedIn: 'root',
@@ -14,7 +15,8 @@ export class AuthService {
   private authenticatedUserSubject = new BehaviorSubject<User | null>(null);
   private authenticatedUser$ = this.authenticatedUserSubject.asObservable();
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient,
+              private router: Router) {}
 
   getAuthenticatedUser(): Observable<User | null> {
     return this.authenticatedUser$;
@@ -32,7 +34,7 @@ export class AuthService {
         if (mailIsAvailable) {
           return this.createUser(user);
         } else {
-          return new Observable((observer) => {
+          return new Observable(observer => {
             observer.error('Email is not available');
             observer.complete();
           });
@@ -47,7 +49,7 @@ export class AuthService {
       map((users) => {
         return !users.some((user) => user.email === email);
       }),
-      catchError((error) => {
+      catchError(error => {
         console.error('Error while checking Email availability:', error);
         return of(false);
       })
@@ -68,25 +70,27 @@ export class AuthService {
     return this.http.post<User>('api/users', newUser);
   }
 
-  signIn(formUser: UserLoginData): Observable<any> {
+  signIn(formUser: UserLoginData): Observable<AuthResponse> {
     const encodedEmail = encodeURIComponent(formUser.email);
-    return this.http.get<User[]>('api/users?email=' + encodedEmail).pipe(
-      map((users) => {
+    return this.http.get<User[]>('api/users?email=' + encodedEmail)
+      .pipe(map(users => {
         const dbUser = users.find(dbUser =>
           dbUser.email === formUser.email &&
-          dbUser.password === this.encryptPassword(formUser.password) &&
-          dbUser.active === true);
-        if (dbUser) {
+          dbUser.password === this.encryptPassword(formUser.password));
+        if (!dbUser) {
+          return { success: false, message: 'Sikertelen bejelentkezés' };
+        }
+        else if (!dbUser.active) {
+          this.authenticatedUserSubject.next(null);
+          return { success: false, message: 'Nem aktivált felhasználó' };
+        }
+        else {
           const token = this.generateToken(dbUser);
           this.setAuthToken(token);
           this.authenticatedUserSubject.next(dbUser);
-          return true;
-        } else {
-          this.authenticatedUserSubject.next(null);
-          return false;
+          return { success: true, message: '' }
         }
-      })
-    );
+      }));
   }
 
   private encryptPassword(password: string): string {

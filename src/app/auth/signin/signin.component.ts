@@ -11,7 +11,7 @@ import { AuthService } from 'src/app/shared/services/auth.service';
 })
 export class SigninComponent implements OnInit {
   signInForm!: FormGroup;
-  error: boolean = false;
+  errorMessage: string = '';
 
   constructor(private authService: AuthService,
               private fb: FormBuilder,
@@ -35,11 +35,11 @@ export class SigninComponent implements OnInit {
         email: this.signInForm.value.email,
         password: this.signInForm.value.password
       };
-      this.authService.signIn(user).subscribe(success => {
-        if (success) {
+      this.authService.signIn(user).subscribe(response => {
+        if (response.success) {
           this.router.navigate(['/newsfeed']);
         } else {
-          this.error = true;
+          this.errorMessage = response.message;
         }
       });
     }

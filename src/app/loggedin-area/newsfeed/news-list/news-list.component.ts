@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { PostsComponent } from './posts/posts.component';
-import { MessagesService } from 'src/app/shared/services/messages.service';
+import { PostService } from 'src/app/shared/services/post.service';
 
 @Component({
   selector: 'app-newsfeed',
@@ -12,11 +12,11 @@ export class NewsListComponent {
   @ViewChild('postForm') postForm!: NgForm;
   @ViewChild('postsComponentRef', { static: false }) postsComponent!: PostsComponent;
 
-  constructor(private messagesService: MessagesService) {}
+  constructor(private postService: PostService) {}
 
   send(form: NgForm): void {
     if (form.value.newPost) {
-      this.messagesService.addPost(form.value.newPost);
+      this.postService.addPost(form.value.newPost);
       form.resetForm();
     }
   }

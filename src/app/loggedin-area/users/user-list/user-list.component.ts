@@ -3,7 +3,7 @@ import { Observable, Subscription, of } from 'rxjs';
 import { AuthService } from 'src/app/shared/services/auth.service';
 import { User } from 'src/app/shared/models/user.model';
 import { UserService } from 'src/app/shared/services/user.service';
-import { MessagesService } from 'src/app/shared/services/messages.service';
+import { NotificationService } from 'src/app/shared/services/notification.service';
 
 @Component({
   selector: 'app-user-list',
@@ -13,15 +13,13 @@ import { MessagesService } from 'src/app/shared/services/messages.service';
 export class UserListComponent implements OnInit, OnDestroy {
   private users: User[] = [];
   private usersSubscription!: Subscription | null;
-
   private authenticatedUser!: User | null;
-
   filteredUsers$!: Observable<User[]> | null;
   filter: string = 'all';
 
   constructor(private userService: UserService,
               private authService: AuthService,
-              private messagesService: MessagesService) {}
+              private notificationService: NotificationService) {}
 
   ngOnInit(): void {
     this.getAuthenticatedUser();
@@ -30,15 +28,15 @@ export class UserListComponent implements OnInit, OnDestroy {
 
   private getAuthenticatedUser(): void {
     this.authService.getAuthenticatedUser()
-    .subscribe(user => this.authenticatedUser = user);
+      .subscribe(user => this.authenticatedUser = user);
   }
 
   private getUsers(): void {
-    this.usersSubscription = this.userService.getUsersUpdateListener()
-    .subscribe(users => {
-      this.users = users;
-      this.filteredUsers$ = this.getFilteredUsers('all');
-    });
+    this.userService.getUsersFromServer();
+    this.userService.getUsers().subscribe(users => {
+        this.users = users;
+        this.filteredUsers$ = this.getFilteredUsers(this.filter);
+      });
   }
 
   setFilter(filter: string): void {
@@ -55,11 +53,12 @@ export class UserListComponent implements OnInit, OnDestroy {
 
   markUser(userId: number): void {
     if (this.authenticatedUser !== null) {
-      this.authenticatedUser.markedUsers.push(userId)
+      this.authenticatedUser.markedUsers.push(userId);
       this.userService.updateUser(this.authenticatedUser);
-      this.messagesService.addNotification('markUser', this.authenticatedUser.id, userId);
+      this.notificationService.addNotification('markUser', this.authenticatedUser.id, userId);
     }
   }
+
   cancelMark(userId: number): void {
     if (this.authenticatedUser !== null) {
       const indexToRemove = this.authenticatedUser.markedUsers.indexOf(userId);
@@ -69,11 +68,11 @@ export class UserListComponent implements OnInit, OnDestroy {
       this.userService.updateUser(this.authenticatedUser);
     }
   }
+
   acceptMark(userId: number): void {
     if (this.authenticatedUser !== null) {
       this.authenticatedUser.contacts.push(userId);
       this.userService.updateUser(this.authenticatedUser);
-
       this.userService.getUserFromServer(userId).subscribe(
         otherUser => {
           otherUser.contacts.push(this.authenticatedUser!.id);
@@ -86,6 +85,7 @@ export class UserListComponent implements OnInit, OnDestroy {
       );
     }
   }
+
   declineMark(userId: number): void {
     if (this.authenticatedUser !== null) {
       this.userService.getUserFromServer(userId).subscribe(

@@ -1,9 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { User } from 'src/app/shared/models/user.model';
 import { AuthService } from 'src/app/shared/services/auth.service';
-import { MessagesService } from 'src/app/shared/services/messages.service';
 import { UserNotification } from 'src/app/shared/models/notification.model';
+import { NotificationService } from 'src/app/shared/services/notification.service';
 
 @Component({
   selector: 'app-notifications',
@@ -15,27 +14,24 @@ export class NotificationsComponent implements OnInit, OnDestroy {
   private notificationsSubscription!: Subscription | null;
   notifications: UserNotification[] = [];
 
-  private authenticatedUser!: User | null;
-
-  constructor(private messagesService: MessagesService, private authService: AuthService) {}
+  constructor(private notificationService: NotificationService) {}
 
   ngOnInit() {
-    this.getAuthenticatedUser();
+    this.resetNotifications();
     this.getNotifications();
   }
 
-  private getAuthenticatedUser(): void {
-    this.authService.getAuthenticatedUser()
-    .subscribe(user => this.authenticatedUser = user);
+  private resetNotifications() {
+    this.notificationService.resetNotifications();
   }
 
   private getNotifications(): void {
-    this.notificationsSubscription = this.messagesService.getNotificationsUpdateListener()
+    this.notificationsSubscription = this.notificationService.getNotificationsUpdateListener()
     .subscribe(notifications => this.notifications = notifications);
   }
 
   close(notificationId: number): void {
-    this.messagesService.deleteNotificationById(notificationId);
+    this.notificationService.deleteNotificationById(notificationId);
   }
 
   ngOnDestroy(): void {

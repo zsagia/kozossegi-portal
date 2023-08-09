@@ -2,20 +2,15 @@ import { Injectable } from '@angular/core';
 import { AuthService } from './auth.service';
 import { HttpClient } from '@angular/common/http';
 import { User } from '../models/user.model';
-import { BehaviorSubject, Observable, Subscription, map, tap } from 'rxjs';
-import { UserNotification } from '../models/notification.model';
-import { Post } from '../models/post.model';
+import { BehaviorSubject, Observable, map } from 'rxjs';
+import { UserMessage } from '../models/message.model';
 import { UserService } from './user.service';
-import { LoggedinAreaModule } from 'src/app/loggedin-area/loggedin-area.module';
+import { MessageContact } from '../models/message-contact.model';
 
-@Injectable({
-  providedIn: LoggedinAreaModule
-})
+@Injectable()
 export class MessagesService {
-  private notificationsSubject = new BehaviorSubject<UserNotification[]>([]);
-  private postsSubject = new BehaviorSubject<Post[]>([]);
+  private messagesSubject = new BehaviorSubject<UserMessage[]>([]);
   private users: User[] = [];
-  private usersSubscription!: Subscription | null;
   private authenticatedUser!: User | null;
 
   constructor(private http: HttpClient,
@@ -23,100 +18,83 @@ export class MessagesService {
               private userService: UserService) {
     this.getAuthenticatedUser();
     this.getUsers();
-    this.getNotificationsFromServer();
-    this.getPostsFromServer();
+    this.getMessagesFromServer();
   }
 
   private getAuthenticatedUser(): void {
     this.authService.getAuthenticatedUser()
       .subscribe(user => this.authenticatedUser = user);
   }
+
   private getUsers(): void {
-    this.usersSubscription = this.userService.getUsersUpdateListener()
-    .subscribe(users => {
-      this.users = users;
-    });
+    this.userService.getUsersFromServer();
+    this.userService.getUsers().subscribe(users => this.users = users);
   }
 
-  private getNotificationsFromServer(): void {
-    this.http.get<UserNotification[]>('api/notifications')
-      .pipe(map(notifications =>
-        notifications.filter(
-          notification => notification.forUser === this.authenticatedUser!.id))
-      )
-      .subscribe(notifications => this.notificationsSubject.next(notifications));
-  }
-  getNotificationsUpdateListener(): Observable<UserNotification[]> {
-    return this.notificationsSubject.asObservable();
-  }
-  deleteNotificationById(notificationId: number) {
-    this.http.delete<void>('api/notifications/' + notificationId).pipe(
-      tap(() => {
-        const currentNotifications = this.notificationsSubject.getValue();
-        const updatedNotifications = currentNotifications.filter(
-          notification => notification.id !== notificationId
-        );
-        this.notificationsSubject.next(updatedNotifications);
-      })
-    ).subscribe();
-  }
-  addNotification(type: string, fromUser: number, forUser: number): void {
-    let message;
-    switch (type) {
-      case 'markUser':
-        message = `Új ismerősnek jelölés: ${fromUser}`;
-        break;
-      case 'markUser':
-        message = `Új üzenet tőle: ${fromUser}`;
-        break;
-      default:
-        message = '';
-        break;
-    }
-    if (message.length) {
-      const notification = {
-        forUser: forUser,
-        message: message
-      };
-      this.http.post<UserNotification>('api/notifications', notification)
-        .subscribe(savedNotification => {
-          const updatedNotifications = this.notificationsSubject.getValue();
-          updatedNotifications.push(savedNotification);
-          this.notificationsSubject.next(updatedNotifications);
-        });
-    }
-  }
-
-  private getPostsFromServer(): void {
-    this.http.get<Post[]>('api/posts')
+  private getMessagesFromServer(): void {
+    this.http.get<UserMessage[]>('api/messages')
       .pipe(
-        map((posts: Post[]) => {
-          return posts.map(post => {
-            const user = this.users.find(user => user.id === post.fromUser);
+        map((messages: UserMessage[]) => {
+          return messages.map(message => {
+            const user = this.users.find(user => user.id === message.fromUser);
             if (user) {
-              return { ...post, userName: user.name };
+              return { ...message, userName: user.name };
             }
-            return post;
+            return message;
           });
         })
       )
-      .subscribe(posts => this.postsSubject.next(posts));
+      .subscribe(messages => this.messagesSubject.next(messages));
   }
-  getPostsUpdateListener(): Observable<Post[]> {
-    return this.postsSubject.asObservable();
+
+  getMessageContacts(): Observable<MessageContact[]> {
+    return this.messagesSubject.pipe(
+      map(messages => messages.filter(message =>
+        message.toUser === this.authenticatedUser!.id)),
+      map((messages: UserMessage[]) => {
+        const contacts: MessageContact[] = [];
+
+        messages.forEach(message => {
+          const user = this.users.find(user => user.id === message.fromUser);
+          if (user) {
+            const existingContact = contacts.find(contact => contact.userId === user.id);
+            if (!existingContact) {
+              contacts.push({ userId: user.id, userName: user.name });
+            }
+          }
+        });
+
+        return contacts;
+      })
+    );
   }
-  addPost(postText: string): void {
+
+  getMessagesWithUser(userId: number): Observable<UserMessage[]> {
+    return this.messagesSubject.pipe(
+      map((messages: UserMessage[]) => {
+        return messages.filter(message =>
+            (message.fromUser === userId &&
+             message.toUser === this.authenticatedUser!.id) ||
+            (message.fromUser === this.authenticatedUser!.id &&
+             message.toUser === userId)
+        );
+      })
+    );
+  }
+
+  addMessage(messageText: string, toUser: number): void {
     const currentDate = new Date();
     const formattedDate = currentDate.toISOString();
-    const newPost = {
+    const newMessage = {
       fromUser: this.authenticatedUser!.id,
+      toUser: toUser,
+      message: messageText,
       timestamp: formattedDate,
-      text: postText
     };
-    this.http.post<Post>('api/posts', newPost).subscribe(savedPost => {
-      const updatedPosts = this.postsSubject.getValue();
-      updatedPosts.push(savedPost);
-      this.postsSubject.next(updatedPosts);
+    this.http.post<UserMessage>('api/messages', newMessage).subscribe(savedMessage => {
+      const updatedMessages = this.messagesSubject.getValue();
+      updatedMessages.push(savedMessage);
+      this.messagesSubject.next(updatedMessages);
     });
   }
 

@@ -90,17 +90,45 @@ export class DbMockService implements InMemoryDbService {
     const messages = [
       {
         id: 1,
-        senderId: 1,
-        receiverId: 2,
-        timestamp: new Date(),
-        text: 'Hello from User 1 to User 2'
+        fromUser: 1,
+        toUser: 2,
+        timestamp: '2023-08-07T11:34:56.789Z',
+        message: 'Hello User 2!'
       },
       {
         id: 2,
-        senderId: 2,
-        receiverId: 1,
-        timestamp: new Date(),
-        text: 'Hello from User 2 to User 1'
+        fromUser: 3,
+        toUser: 1,
+        timestamp: '2023-08-07T12:34:56.789Z',
+        message: 'Hello User 1!'
+      },
+      {
+        id: 3,
+        fromUser: 1,
+        toUser: 3,
+        timestamp: '2023-08-07T13:34:56.789Z',
+        message: 'Hello User!'
+      },
+      {
+        id: 4,
+        fromUser: 3,
+        toUser: 1,
+        timestamp: '2023-08-07T14:34:56.789Z',
+        message: 'Mi a helyzet?'
+      },
+      {
+        id: 5,
+        fromUser: 1,
+        toUser: 3,
+        timestamp: '2023-08-07T15:34:56.789Z',
+        message: 'Áh, semmi.'
+      },
+      {
+        id: 6,
+        fromUser: 5,
+        toUser: 1,
+        timestamp: '2023-08-07T16:34:56.789Z',
+        message: 'Hello from User 5 to User 1'
       },
     ];
 

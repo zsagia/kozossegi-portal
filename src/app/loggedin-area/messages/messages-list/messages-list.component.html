@@ -1,1 +1,28 @@
-<p>messages-list works!</p>
+<div class="contacts-messages-container">
+
+  <div class="contacts-container">
+    <div class="contact" *ngFor="let contact of messageContacts">
+      <div (click)="selectContact(contact.userId)"
+            [ngClass]="{'selected':contact.userId===selectedContactId}">
+        {{ contact.userName }}
+    </div>
+    </div>
+  </div>
+
+  <div class="messages-container">
+    <app-messages [contactId]="selectedContactId"></app-messages>
+    <div class="new" *ngIf="selectedContactId!==null">
+      <form #messageForm="ngForm" (submit)="send(messageForm)">
+        <input type="text"
+               id="newMessage"
+               name="newMessage"
+               #newMessageInput="ngModel"
+               placeholder="Üzenet írása"
+               aria-label="Üzenet írása"
+               ngModel>
+        <button type="submit" [disabled]="newMessageInput.value===''">KÜLDÉS</button>
+      </form>
+    </div>
+  </div>
+
+</div>

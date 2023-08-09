@@ -1,7 +1,8 @@
-export interface Message {
+export interface UserMessage {
   id: number;
   fromUser: number;
-  forUser: number;
-  text: string;
+  fromUserName?: string;
+  toUser: number;
+  message: string;
   timestamp: string;
 }

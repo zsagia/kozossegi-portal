@@ -1,0 +1,6 @@
+<div class="post" *ngFor="let message of messages"
+     [ngClass]="message.fromUser === contactId ? 'otherUser' : 'authUser'">
+  <p class="name">{{ message.fromUser }}</p>
+  <p class="text">" {{ message.message }} "</p>
+  <p class="date">{{ message.timestamp | date:'Y.MM.dd. HH:MM' }}</p>
+</div>

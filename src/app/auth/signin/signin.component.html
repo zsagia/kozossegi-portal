@@ -31,7 +31,9 @@
       <button type="submit" [disabled]="signInForm.invalid">Bejelentkezek</button>
     </div>
     <div class="form-group">
-      <span class="error" *ngIf="error">Hibás bejelentkezés</span>
+      <span class="error" *ngIf="errorMessage.length">
+        {{ errorMessage }}
+      </span>
     </div>
   </form>
 </div>
