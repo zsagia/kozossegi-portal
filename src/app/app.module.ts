@@ -11,6 +11,10 @@ import { AuthService } from './shared/services/auth.service';
 
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
+import { MessagesService } from './shared/services/messages.service';
+import { NotificationService } from './shared/services/notification.service';
+import { PostService } from './shared/services/post.service';
+import { UserService } from './shared/services/user.service';
 
 @NgModule({
   declarations: [

@@ -6,6 +6,12 @@ header {
   align-items: center;
   padding: 5px 30px 10px 10px;
 
+  .greetings {
+    font-weight: bold;
+    font-size: 18px;
+    font-style: italic;
+  }
+
   .logo-container {
     .logo {
       width: 120px;

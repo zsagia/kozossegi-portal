@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { AuthService } from './auth.service';
 import { HttpClient } from '@angular/common/http';
 import { User } from '../models/user.model';
-import { BehaviorSubject, Observable, map } from 'rxjs';
+import { BehaviorSubject, Observable, map, of, switchMap } from 'rxjs';
 import { UserMessage } from '../models/message.model';
 import { UserService } from './user.service';
 import { MessageContact } from '../models/message-contact.model';
@@ -48,21 +48,15 @@ export class MessagesService {
   }
 
   getMessageContacts(): Observable<MessageContact[]> {
-    return this.messagesSubject$.pipe(
-      map(messages => messages.filter(message =>
-        message.toUser === this.authenticatedUser!.id)),
-      map((messages: UserMessage[]) => {
-        const contacts: MessageContact[] = [];
-        messages.forEach(message => {
-          const user = this.users.find(user => user.id === message.fromUser);
-          if (user) {
-            const existingContact = contacts.find(contact => contact.userId === user.id);
-            if (!existingContact) {
-              contacts.push({ userId: user.id, userName: user.name });
-            }
-          }
-        });
-        return contacts;
+    return this.userService.getUsers().pipe(
+      switchMap(users => {
+        const messageContacts: MessageContact[] = users
+          .filter(user => user.contactState === 'contact')
+          .map(user => ({
+            userId: user.id,
+            userName: user.name
+          }));
+        return of(messageContacts);
       })
     );
   }

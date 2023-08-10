@@ -8,9 +8,7 @@ import { Router } from '@angular/router';
 import { UserRole } from '../enums/user-role.enum';
 import { AuthResponse } from '../models/auth-response.model';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class AuthService {
   private authenticatedUser$ = new BehaviorSubject<User | null>(null);
 
@@ -18,8 +16,7 @@ export class AuthService {
               private router: Router) {}
 
   getAuthenticatedUser(): Observable<User | null> {
-    return this.authenticatedUser$.asObservable()
-      .pipe(takeWhile(value => value != null));
+    return this.authenticatedUser$.asObservable();
   }
 
   checkLogin(): Observable<boolean> {

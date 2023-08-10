@@ -16,6 +16,7 @@ export class NotificationsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.resetNotifications();
+    this.notificationService.getNotificationsFromServer();
     this.getNotifications();
   }
 

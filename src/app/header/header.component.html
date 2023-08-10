@@ -3,6 +3,9 @@
     <img class="logo" src="assets/logo-notext.png" alt="Logo">
     <h1>Közösségi Portál</h1>
   </div>
+  <div class="greetings" *ngIf="isAuthenticated">
+    Hello {{ authenticatedUser?.name }}!
+  </div>
   <nav class="menu-links">
       <a class="menu-link"
          routerLink="/newsfeed"

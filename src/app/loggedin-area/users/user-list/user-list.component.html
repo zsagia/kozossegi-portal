@@ -31,7 +31,7 @@
     <div class="user-details">{{ user.about }}</div>
     <div class="user-button-container">
       <button class="message"
-              routerLink="/messages"
+              [routerLink]="'/messages/' + user.id"
               *ngIf="user.contactState==='contact'">
               Üzenet küldése
       </button>

@@ -9,4 +9,22 @@
     height: 20px;
     border-radius: 5px;
   }
+
+  button {
+    border: none;
+    color: #333;
+    border-radius: 5px;
+    border: hidden;
+    padding: 15px 20px;
+    background-color: #97C96E;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 16px;
+  }
+
+  .error {
+    color: #FF4754;
+    font-weight: bold;
+    margin-top: 10px;
+  }
 }

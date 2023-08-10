@@ -9,7 +9,7 @@ import { MessagesService } from 'src/app/shared/services/messages.service';
   templateUrl: './message.component.html',
   styleUrls: ['./message.component.scss']
 })
-export class MessageComponent implements OnChanges {
+export class MessageComponent implements OnInit, OnChanges {
   authenticatedUser!: User | null;
   @Input() contactId: number | null = null;
   @Input() contactName: string | null = null;

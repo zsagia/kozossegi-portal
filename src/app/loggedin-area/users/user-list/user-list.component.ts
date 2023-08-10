@@ -58,7 +58,7 @@ export class UserListComponent implements OnInit, OnDestroy {
     if (this.authenticatedUser !== null) {
       this.authenticatedUser.markedUsers.push(userId);
       this.userService.updateUser(this.authenticatedUser);
-      this.notificationService.addNotification('markUser', this.authenticatedUser.id, userId);
+      this.notificationService.addNotification('markUser', userId);
     }
   }
 

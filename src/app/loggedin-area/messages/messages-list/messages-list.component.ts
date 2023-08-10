@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { MessageContact } from 'src/app/shared/models/message-contact.model';
 import { MessagesService } from 'src/app/shared/services/messages.service';
+import { UserService } from 'src/app/shared/services/user.service';
 
 @Component({
   selector: 'app-messages-list',
@@ -16,10 +18,21 @@ export class MessagesListComponent {
   selectedContactId: number | null = null;
   selectedContactName: string | null = null;
 
-  constructor(private messagesService: MessagesService) {}
+  constructor(private activatedRoute: ActivatedRoute,
+              private messagesService: MessagesService,
+              private userService: UserService) {}
 
   ngOnInit() {
+    this.activatedRoute.params.subscribe(params => {
+      if (params['id']) {
+        this.selectedContactId = +params['id'];
+      }
+    });
     this.getMessageContacts();
+  }
+
+  getContacts(): void {
+    this.userService.getUsers().subscribe();
   }
 
   getMessageContacts(): void {

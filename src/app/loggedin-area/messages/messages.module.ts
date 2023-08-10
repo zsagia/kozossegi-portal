@@ -9,6 +9,10 @@ const routes: Routes = [
   {
     path: '',
     component: MessagesListComponent,
+  },
+  {
+    path: ':id',
+    component: MessagesListComponent
   }
 ];
 

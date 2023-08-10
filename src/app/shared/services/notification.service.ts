@@ -21,7 +21,8 @@ export class NotificationService {
       .subscribe(user => this.authenticatedUser = user);
   }
 
-  private getNotificationsFromServer(): void {
+  getNotificationsFromServer(): void {
+    // this.getAuthenticatedUser();
     this.http.get<UserNotification[]>('api/notifications')
       .pipe(map(notifications =>
         notifications.filter(
@@ -39,14 +40,14 @@ export class NotificationService {
       .subscribe(() => this.getNotificationsFromServer());
   }
 
-  addNotification(type: string, fromUser: number, forUser: number): void {
+  addNotification(type: string, forUser: number): void {
     let message;
     switch (type) {
       case 'markUser':
-        message = `Új ismerősnek jelölés: ${fromUser}`;
+        message = `Új ismerősnek jelölés tőle: ${this.authenticatedUser?.name}`;
         break;
       case 'markUser':
-        message = `Új üzenet tőle: ${fromUser}`;
+        message = `Új üzenet tőle: ${this.authenticatedUser?.name}`;
         break;
       default:
         message = '';
