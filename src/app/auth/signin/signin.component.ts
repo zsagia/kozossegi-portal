@@ -23,8 +23,8 @@ export class SigninComponent implements OnInit {
 
   initForm(): void {
     this.signInForm = this.fb.group({
-      email: ['admin@b.c', [Validators.required, Validators.email]],
-      password: ['123', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', Validators.required],
     });
   }
 
