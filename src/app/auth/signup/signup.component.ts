@@ -11,8 +11,8 @@ import { Router } from '@angular/router';
 })
 export class SignupComponent {
   @ViewChild('signupForm') signupForm!: NgForm;
-  name: string = 'qwe';
-  email: string = 'gg@gg.hu';
+  name: string = 'New User';
+  email: string = 'uj@b.c';
   password: string = '123';
   errorMessage: string = '';
 

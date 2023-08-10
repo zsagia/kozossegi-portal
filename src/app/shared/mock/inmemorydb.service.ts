@@ -10,8 +10,8 @@ export class DbMockService implements InMemoryDbService {
     const users = [
       {
         id: 1,
-        name: 'User 1',
-        email: 'a@b.c',
+        name: 'Admin',
+        email: 'admin@b.c',
         password: 'MTIz',
         active: true,
         about: "Én vagyok az admin :)",
@@ -22,7 +22,7 @@ export class DbMockService implements InMemoryDbService {
       {
         id: 2,
         name: 'User 2',
-        email: 'a@b.c',
+        email: 'user2@b.c',
         password: 'MTIz',
         about: "Helló mindenki!",
         active: true,
@@ -33,7 +33,7 @@ export class DbMockService implements InMemoryDbService {
       {
         id: 3,
         name: 'User 3',
-        email: 'a@b.c',
+        email: 'use3@b.c',
         password: 'MTIz',
         about: "Nem mutatkozom be...",
         active: true,
@@ -44,7 +44,7 @@ export class DbMockService implements InMemoryDbService {
       {
         id: 4,
         name: 'User 4',
-        email: 'a@b.c',
+        email: 'user4@b.c',
         password: 'MTIz',
         about: "Hajrá Közösségi Portál :D",
         active: true,
@@ -55,7 +55,7 @@ export class DbMockService implements InMemoryDbService {
       {
         id: 5,
         name: 'User 5',
-        email: 'a@b.c',
+        email: 'user5@b.c',
         password: 'MTIz',
         about: "Ennyit rólam.",
         active: true,
@@ -66,7 +66,7 @@ export class DbMockService implements InMemoryDbService {
       {
         id: 6,
         name: 'User 6',
-        email: 'a@b.c',
+        email: 'user6@b.c',
         password: 'MTIz',
         about: "Újabb user vagyok.",
         active: false,
