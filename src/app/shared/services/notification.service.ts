@@ -22,7 +22,6 @@ export class NotificationService {
   }
 
   getNotificationsFromServer(): void {
-    // this.getAuthenticatedUser();
     this.http.get<UserNotification[]>('api/notifications')
       .pipe(map(notifications =>
         notifications.filter(
