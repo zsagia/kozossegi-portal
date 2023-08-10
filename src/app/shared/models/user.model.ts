@@ -8,5 +8,5 @@ export interface User extends UserRegData {
   markedUsers: number[];
   contacts: number[];
   role: UserRole;
-  contactState?: string | null; // TODO: pontosítani, pl. enum és nem null
+  contactState?: string | null;
 }

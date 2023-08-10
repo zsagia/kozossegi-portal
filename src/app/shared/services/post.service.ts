@@ -31,7 +31,6 @@ export class PostService {
   }
 
   private getPostsFromServer(): void {
-    // this.getAuthenticatedUser();
     this.http.get<Post[]>('api/posts')
       .pipe(
         map((posts: Post[]) => {
