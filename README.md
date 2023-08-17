@@ -1,4 +1,4 @@
-# KozossegiPortal - Specification
+# KozossegiPortal - Specifikáció
 
 1. Közösségi oldal készítése
 
