@@ -5,6 +5,8 @@ import { HttpClient } from '@angular/common/http';
 import { AuthService } from './auth.service';
 import { User } from '../models/user.model';
 
+/* "Új jelölés" és "Új üzenet" értesítésekért felelős az Üzenőfal képernyőn */
+
 @Injectable()
 export class NotificationService {
   private notificationsSubject$ = new BehaviorSubject<UserNotification[]>([]);
@@ -21,6 +23,7 @@ export class NotificationService {
       .subscribe(user => this.authenticatedUser = user);
   }
 
+  // Értesítések lekérdezése a szerverről
   getNotificationsFromServer(): void {
     this.http.get<UserNotification[]>('api/notifications')
       .pipe(map(notifications =>
@@ -30,15 +33,18 @@ export class NotificationService {
       .subscribe(notifications => this.notificationsSubject$.next(notifications));
   }
 
+  // Értesítések kiajánlása
   getNotifications(): Observable<UserNotification[]> {
     return this.notificationsSubject$.asObservable();
   }
 
+  // Egy adott értesítés törlése
   deleteNotificationById(notificationId: number): void {
     this.http.delete<void>('api/notifications/' + notificationId)
       .subscribe(() => this.getNotificationsFromServer());
   }
 
+  // Egy adott értesítés hozzáadása
   addNotification(type: string, forUser: number): void {
     let message;
     switch (type) {
@@ -62,6 +68,7 @@ export class NotificationService {
     }
   }
 
+  // Értesítések ürítése
   resetNotifications() {
     this.notificationsSubject$.next([]);
   }

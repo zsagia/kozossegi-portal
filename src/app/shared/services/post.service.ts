@@ -6,6 +6,8 @@ import { Post } from '../models/post.model';
 import { BehaviorSubject, Observable, map } from 'rxjs';
 import { User } from '../models/user.model';
 
+/* Posztok kiszolgálásáért felelős szerviz az Üzenőfal képernyőn */
+
 @Injectable()
 export class PostService {
   private postsSubject$ = new BehaviorSubject<Post[]>([]);
@@ -30,6 +32,7 @@ export class PostService {
     this.userService.getUsers().subscribe(users => this.users = users);
   }
 
+  // Posztok lekérdezése
   private getPostsFromServer(): void {
     this.http.get<Post[]>('api/posts')
       .pipe(
@@ -46,10 +49,12 @@ export class PostService {
       .subscribe(posts => this.postsSubject$.next(posts));
   }
 
+  // Posztok kiajánlása
   getPosts(): Observable<Post[]> {
     return this.postsSubject$.asObservable();
   }
 
+  // Egy poszt hozzáadása
   addPost(postText: string): void {
     const currentDate = new Date();
     const formattedDate = currentDate.toISOString();

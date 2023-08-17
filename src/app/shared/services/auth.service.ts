@@ -8,6 +8,8 @@ import { Router } from '@angular/router';
 import { UserRole } from '../enums/user-role.enum';
 import { AuthResponse } from '../models/auth-response.model';
 
+/* Regisztráció, Be/Kijelentkezés logikáka */
+
 @Injectable()
 export class AuthService {
   private authenticatedUser$ = new BehaviorSubject<User | null>(null);

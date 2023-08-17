@@ -7,6 +7,8 @@ import { UserMessage } from '../models/message.model';
 import { UserService } from './user.service';
 import { MessageContact } from '../models/message-contact.model';
 
+/* Az Üzenetek képernyőt kiszolgáló szerviz */
+
 @Injectable()
 export class MessagesService {
   private messagesSubject$ = new BehaviorSubject<UserMessage[]>([]);
@@ -31,6 +33,8 @@ export class MessagesService {
     this.userService.getUsers().subscribe(users => this.users = users);
   }
 
+  // Lekérdezi az összes üzenetet a szerverről
+  // Kiegészíti mindet a userName-el
   private getMessagesFromServer(): void {
     this.http.get<UserMessage[]>('api/messages')
       .pipe(
@@ -47,6 +51,7 @@ export class MessagesService {
       .subscribe(messages => this.messagesSubject$.next(messages));
   }
 
+  // Az Üzenetek képernyő bal oldali oszlopát szolgálja ki
   getMessageContacts(): Observable<MessageContact[]> {
     return this.userService.getUsers().pipe(
       switchMap(users => {
@@ -61,6 +66,7 @@ export class MessagesService {
     );
   }
 
+  // Adott kontakthoz tartazó üzenetek
   getMessagesWithUser(userId: number): Observable<UserMessage[]> {
     return this.messagesSubject$.pipe(
       map((messages: UserMessage[]) => {
@@ -74,6 +80,7 @@ export class MessagesService {
     );
   }
 
+  // Üzenet küldési user-nek, majd a teljes lista frissítése
   addMessage(messageText: string, toUser: number): void {
     const currentDate = new Date();
     const formattedDate = currentDate.toISOString();
