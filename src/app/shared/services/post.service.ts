@@ -1,24 +1,22 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { AuthService } from './auth.service';
-import { UserService } from './user.service';
+
 import { Post } from '../models/post.model';
 import { BehaviorSubject, Observable, map } from 'rxjs';
 import { User } from '../models/user.model';
+import { UserStateService } from 'src/app/module/user/state';
+import { AuthStateService } from 'src/app/auth/service';
 
-/* Posztok kiszolgálásáért felelős szerviz az Üzenőfal képernyőn */
-
-@Injectable()
+@Injectable({providedIn: 'root'})
 export class PostService {
   private postsSubject$ = new BehaviorSubject<Post[]>([]);
   private users: User[] = [];
   private authenticatedUser!: User | null;
 
   constructor(private http: HttpClient,
-              private authService: AuthService,
-              private userService: UserService) {
+              private authService: AuthStateService,
+              private userStateService: UserStateService) {
     this.getAuthenticatedUser();
-    this.getUsers();
     this.getPostsFromServer();
   }
 
@@ -28,13 +26,11 @@ export class PostService {
   }
 
   private getUsers(): void {
-    this.userService.getUsersFromServer();
-    this.userService.getUsers().subscribe(users => this.users = users);
+    this.userStateService.getUsers().subscribe(users => this.users = users);
   }
 
-  // Posztok lekérdezése
   private getPostsFromServer(): void {
-    this.http.get<Post[]>('api/posts')
+    this.http.get<Post[]>('http://localhost:3000/posts')
       .pipe(
         map((posts: Post[]) => {
           return posts.map(post => {
@@ -49,12 +45,10 @@ export class PostService {
       .subscribe(posts => this.postsSubject$.next(posts));
   }
 
-  // Posztok kiajánlása
   getPosts(): Observable<Post[]> {
     return this.postsSubject$.asObservable();
   }
 
-  // Egy poszt hozzáadása
   addPost(postText: string): void {
     const currentDate = new Date();
     const formattedDate = currentDate.toISOString();
@@ -63,7 +57,7 @@ export class PostService {
       timestamp: formattedDate,
       text: postText
     };
-    this.http.post<Post>('api/posts', newPost).subscribe(savedPost => {
+    this.http.post<Post>('http://localhost:3000/posts', newPost).subscribe(savedPost => {
       const updatedPosts = this.postsSubject$.getValue();
       updatedPosts.push(savedPost);
       this.getPostsFromServer();

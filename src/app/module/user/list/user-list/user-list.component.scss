@@ -1,0 +1,110 @@
+.user-grid, .filter-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  overflow: hidden;
+  gap: 20px;
+  padding: 20px 20px 0 20px;
+  justify-content: center;
+}
+
+.user-item {
+  box-sizing: border-box;
+  width: 200px;
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #97C96E;
+  border-radius: 5px;
+
+  div {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+
+    button {
+      cursor: pointer;
+      outline: none;
+      color: #fff;
+      font-size: 14px;
+      border-radius: 5px;
+      padding: 5px 10px;
+      border: 1px solid #FFF8EB;
+    }
+
+    &.user-name {
+      height: 20%;
+      font-weight: bold;
+      font-size: 1.2rem;
+      border-bottom: #FFF8EB 1px solid;
+      background-color: #568532;
+      border-top-left-radius: 5px;
+      border-top-right-radius: 5px;
+
+      &.inactive {
+        background-color: #555;
+      }
+
+      span.inactive {
+        background-color: #568532;
+        border-radius: 5px;
+        padding: 2px 3px;
+        margin-left: 10px;
+        cursor: pointer;
+
+        &::after {
+          content: '\2713';
+        }
+      }
+    }
+    &.user-details {
+      height: 35%;
+      width: 80%;
+      color: #333;
+      padding: 5px 10px;
+    }
+    &.user-button-container {
+      height: 45%;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      background-color: #84c152;
+      border-bottom-left-radius: 5px;
+      border-bottom-right-radius: 5px;
+
+      .message {
+        background-color: #7752ac;
+      }
+      .mark {
+        background-color: #009FF5;
+      }
+      .accept {
+        background-color: #446B24;
+      }
+      .decline {
+        background-color: #FF4754;
+      }
+      .cancel {
+        background-color: #FF4754;
+      }
+    }
+  }
+}
+
+.filter-buttons button {
+  border: none;
+  outline: none;
+  cursor: pointer;
+  color: #000;
+  font-size: 16px;
+  border-radius: 5px;
+  padding: 10px 20px;
+  background-color: #F1E4ED;
+
+  &.on {
+    background-color: #CEA1C1;
+  }
+}

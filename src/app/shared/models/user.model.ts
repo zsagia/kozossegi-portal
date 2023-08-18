@@ -10,3 +10,5 @@ export interface User extends UserRegData {
   role: UserRole;
   contactState?: string | null;
 }
+
+export type UserAdd = Omit<User, 'id'>;

@@ -1,51 +1,23 @@
-import { Injectable } from '@angular/core';
-import { UserNotification } from '../models/notification.model';
-import { BehaviorSubject, Observable, map } from 'rxjs';
+import { BehaviorSubject, map, Observable, of, switchMap } from 'rxjs';
+import { AuthStateService } from 'src/app/auth/service';
+
 import { HttpClient } from '@angular/common/http';
-import { AuthService } from './auth.service';
+import { Injectable } from '@angular/core';
+
+import { UserNotification } from '../models/notification.model';
 import { User } from '../models/user.model';
 
-/* "Új jelölés" és "Új üzenet" értesítésekért felelős az Üzenőfal képernyőn */
-
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class NotificationService {
-  private notificationsSubject$ = new BehaviorSubject<UserNotification[]>([]);
   private authenticatedUser!: User | null;
+  private notificationsSubject$ = new BehaviorSubject<UserNotification[]>([]);
 
-  constructor(private http: HttpClient,
-              private authService: AuthService) {
-    this.getAuthenticatedUser();
-    this.getNotificationsFromServer();
-  }
+  constructor(
+    private http: HttpClient,
+    private authStateService: AuthStateService
+  ) {}
 
-  private getAuthenticatedUser(): void {
-    this.authService.getAuthenticatedUser()
-      .subscribe(user => this.authenticatedUser = user);
-  }
-
-  // Értesítések lekérdezése a szerverről
-  getNotificationsFromServer(): void {
-    this.http.get<UserNotification[]>('api/notifications')
-      .pipe(map(notifications =>
-        notifications.filter(
-          notification => notification.forUser === this.authenticatedUser!.id))
-      )
-      .subscribe(notifications => this.notificationsSubject$.next(notifications));
-  }
-
-  // Értesítések kiajánlása
-  getNotifications(): Observable<UserNotification[]> {
-    return this.notificationsSubject$.asObservable();
-  }
-
-  // Egy adott értesítés törlése
-  deleteNotificationById(notificationId: number): void {
-    this.http.delete<void>('api/notifications/' + notificationId)
-      .subscribe(() => this.getNotificationsFromServer());
-  }
-
-  // Egy adott értesítés hozzáadása
-  addNotification(type: string, forUser: number): void {
+  public addNotification(type: string, forUser: number): void {
     let message;
     switch (type) {
       case 'markUser':
@@ -61,15 +33,52 @@ export class NotificationService {
     if (message.length) {
       const notification = {
         forUser: forUser,
-        message: message
+        message: message,
       };
-      this.http.post<UserNotification>('api/notifications', notification)
+      this.http
+        .post<UserNotification>(
+          'http://localhost:3000/notifications',
+          notification
+        )
         .subscribe(() => this.getNotificationsFromServer());
     }
   }
 
-  // Értesítések ürítése
-  resetNotifications() {
+  public deleteNotificationById(notificationId: number): void {
+    this.http
+      .delete<void>('http://localhost:3000/notifications/' + notificationId)
+      .subscribe(() => this.getNotificationsFromServer());
+  }
+
+  public getNotifications(): Observable<UserNotification[]> {
+    return this.notificationsSubject$;
+  }
+
+  public getNotificationsFromServer(): void {
+    this.http
+      .get<UserNotification[]>('http://localhost:3000/notifications')
+      .pipe(
+        switchMap((notifications) =>
+          this.authStateService
+            .getAuthenticatedUser()
+            .pipe(
+              map((authenticatedUser) => ({ authenticatedUser, notifications }))
+            )
+        ),
+        switchMap(({ authenticatedUser, notifications }) =>
+          of(
+            notifications.filter(
+              (notification) => notification.forUser === authenticatedUser!.id
+            )
+          )
+        )
+      )
+      .subscribe((notifications) =>
+        this.notificationsSubject$.next(notifications)
+      );
+  }
+
+  public resetNotifications() {
     this.notificationsSubject$.next([]);
   }
 }

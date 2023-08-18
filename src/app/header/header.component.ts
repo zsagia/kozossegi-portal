@@ -1,9 +1,11 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { AuthService } from '../shared/services/auth.service';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { User } from '../shared/models/user.model';
+import { AuthUtilService } from '../auth/service/auth-util.service';
+import { AuthStateService } from '../auth/service';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss']
@@ -15,13 +17,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   authenticatedUser!: User | null;
 
-  constructor(private authService: AuthService) {}
+  constructor(private authUtilService: AuthUtilService, private authStateService: AuthStateService) {}
 
   ngOnInit() {
-    this.authStatusSubscription = this.authService.checkLogin().subscribe(
+    this.authStatusSubscription = this.authUtilService.checkLogin().subscribe(
       isAuth => this.isAuthenticated = isAuth
     );
-    this.authUseSubscription = this.authService.getAuthenticatedUser().subscribe(
+    this.authUseSubscription = this.authStateService.getAuthenticatedUser().subscribe(
       user => this.authenticatedUser = user
     );
   }
@@ -32,7 +34,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   logout() {
-    this.authService.signOut();
+    this.authUtilService.signOut();
   }
 
 }

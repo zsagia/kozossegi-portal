@@ -1,39 +1,43 @@
-import { Component, ViewChild } from '@angular/core';
-import { NgForm } from "@angular/forms";
-import { AuthService } from '../../shared/services/auth.service';
 import { UserRegData } from 'src/app/shared/models/user-reg.model';
+
+import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
+import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 
+import { AuthUtilService } from '../service/auth-util.service';
+
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-signup',
   templateUrl: './signup.component.html',
-  styleUrls: ['./signup.component.scss']
+  styleUrls: ['./signup.component.scss'],
 })
 export class SignupComponent {
+  public email: string = '';
+  public errorMessage: string = '';
+  public name: string = '';
+  public password: string = '';
   @ViewChild('signupForm') signupForm!: NgForm;
-  name: string = '';
-  email: string = '';
-  password: string = '';
-  errorMessage: string = '';
 
-  constructor(private authService: AuthService,
-              private router: Router) {}
+  constructor(
+    private authUtilService: AuthUtilService,
+    private router: Router
+  ) {}
 
-  signup(form: NgForm) {
+  public signup(form: NgForm) {
     if (form.invalid) {
       return;
     }
     const newUser: UserRegData = {
       name: form.value.name,
       email: form.value.email,
-      password: form.value.password
+      password: form.value.password,
     };
-    this.authService.signUp(newUser).subscribe({
+    this.authUtilService.signUp(newUser).subscribe({
       next: () => this.router.navigate(['/signin']),
-      error: errorMessage => {
+      error: (errorMessage) => {
         this.errorMessage = errorMessage;
-      }
+      },
     });
-
   }
 }

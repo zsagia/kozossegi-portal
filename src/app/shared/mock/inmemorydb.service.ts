@@ -12,7 +12,7 @@ export class DbMockService implements InMemoryDbService {
         id: 1,
         name: 'Admin',
         email: 'admin@b.c',
-        password: 'MTIz',
+        password: 'TVRJeg==',
         active: true,
         about: "Én vagyok az admin :)",
         markedUsers: [2],

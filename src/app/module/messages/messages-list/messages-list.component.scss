@@ -1,0 +1,77 @@
+.contacts-messages-container {
+  display: flex;
+  height: 100vh;
+
+  .contacts-container {
+    display: flex;
+    flex-direction: column;
+    flex: 30%;
+    height: 100%;
+    background-color: #dfeed3;
+
+    .contact {
+      display: flex;
+      height: 40px;
+      background-color: #97C96E;
+      border-bottom: 1px solid #FFF8EB;
+      cursor: pointer;
+
+      &:first-child {
+        border-top: 1px solid #FFF8EB;
+      }
+
+      div {
+        width: 100%;
+        padding: 5px;
+
+        &.selected {
+          background-color: #CEA1C1;
+        }
+      }
+    }
+  }
+
+  .messages-container {
+    display: flex;
+    flex-direction: column;
+    flex: 70%;
+    padding: 10px;
+  }
+
+  .new {
+    position: fixed;
+    bottom: 0;
+    height: 60px;
+    width: 70%;
+    padding: 10px 0;
+    background-color: #97C96E;
+    border-top: 2px solid #FFF8EB;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    input {
+      border: none;
+      color: #333;
+      border-radius: 5px;
+      border: hidden;
+      padding: 20px 30px;
+      background-color: #FFF8EB;
+      width: 300px;
+    }
+    button {
+      border: none;
+      color: #FFF8EB;
+      border-radius: 5px;
+      border: hidden;
+      padding: 20px 10px;
+      background-color: #555;
+      width: 100px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 14px;
+      margin-left: 10px;
+    }
+  }
+
+}

@@ -17,6 +17,7 @@ import { SigninComponent } from './signin/signin.component';
     FormsModule,
     ReactiveFormsModule
   ],
+  providers: [],
   exports: [RouterModule]
 })
 export class AuthModule { }
